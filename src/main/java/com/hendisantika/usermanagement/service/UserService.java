@@ -60,6 +60,27 @@ public class UserService {
     }
 
     public User getUserById(Long id) throws UsernameOrIdNotFound {
-        return repository.findById(id).orElseThrow(() -> new UsernameOrIdNotFound("El Id del usuario no existe."));
+        return repository.findById(id).orElseThrow(() -> new UsernameOrIdNotFound("User id does not exist."));
+    }
+
+    public User updateUser(User fromUser) throws Exception {
+        User toUser = getUserById(fromUser.getId());
+        mapUser(fromUser, toUser);
+        return repository.save(toUser);
+    }
+
+
+    /**
+     * Map everythin but the password.
+     *
+     * @param from
+     * @param to
+     */
+    protected void mapUser(User from, User to) {
+        to.setUsername(from.getUsername());
+        to.setFirstName(from.getFirstName());
+        to.setLastName(from.getLastName());
+        to.setEmail(from.getEmail());
+        to.setRoles(from.getRoles());
     }
 }

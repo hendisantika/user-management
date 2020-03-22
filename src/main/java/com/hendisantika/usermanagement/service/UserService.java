@@ -1,5 +1,6 @@
 package com.hendisantika.usermanagement.service;
 
+import com.hendisantika.usermanagement.entity.User;
 import com.hendisantika.usermanagement.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -22,4 +23,7 @@ public class UserService {
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    public Iterable<User> getAllUsers() {
+        return repository.findAll();
+    }
 }

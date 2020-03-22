@@ -1,7 +1,7 @@
 package com.hendisantika.usermanagement.repository;
 
+import com.hendisantika.usermanagement.entity.User;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;

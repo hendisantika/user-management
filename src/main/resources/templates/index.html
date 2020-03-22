@@ -15,7 +15,7 @@
     <script src="https://use.fontawesome.com/releases/v5.0.7/js/all.js"></script>
 
     <!-- Our css-->
-    <link href="static/css/index.css" rel="stylesheet" th:href="@{/css/index.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/css/index.css}" type="text/css">
 
 </head>
 <body>
@@ -23,7 +23,7 @@
     <div class="col-sm-8 main-section">
         <div class="modal-content">
             <div class="col-12 user-img">
-                <img src="static/img/user.png" th:src="@{/img/user.png}"/>
+                <img th:src="@{/img/user.png}"/>
             </div>
             <form class="col-12" method="post" th:action="@{/login}">
                 <div class="form-group" id="user-group">

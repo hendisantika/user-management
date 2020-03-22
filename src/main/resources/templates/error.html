@@ -13,7 +13,7 @@
     <script src="https://use.fontawesome.com/releases/v5.0.7/js/all.js"></script>
 
     <!-- Our css-->
-    <link href="static/css/index.css" rel="stylesheet" th:href="@{/css/index.css}" type="text/css">
+    <link href="static/css/index.css" rel="stylesheet" th:href="@{/static/css/index.css}" type="text/css">
 
     <style type="text/css">
         body {
@@ -21,7 +21,7 @@
         }
 
         img {
-            width: 100%;
+            width: 75%;
         }
 
     </style>
@@ -30,10 +30,14 @@
 <div class="container text-center">
     <div class="mx-auto col-10 card">
         <div class="card-header">
-            <h4 th:text="${error}">Internal Server Error</h4>
+            <h4><span th:text="${error}"></span> - <span th:text="${status}"></span></h4>
         </div>
         <div class="card-body">
-            <a href="/userForm"><img src="static/img/error/404.png" th:src="@{/img/error/404.png}"/></a>
+            <a href="/userForm"><img src="static/img/error/500.png" th:src="@{/static/img/error/500.png}"/></a>
+        </div>
+        <div class="card-footer">
+            <span th:text="${message}">Message</span><br/>
+            <span th:text="${exception}">Trace </span><br/>
         </div>
     </div>
 </div>

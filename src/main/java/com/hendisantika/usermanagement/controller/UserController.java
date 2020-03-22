@@ -81,4 +81,11 @@ public class UserController {
         return index();
     }
 
+    private void baseAttributerForUserForm(Model model, User user, String activeTab) {
+        model.addAttribute("userForm", user);
+        model.addAttribute("userList", userService.getAllUsers());
+        model.addAttribute("roles", roleRepository.findAll());
+        model.addAttribute(activeTab, "active");
+    }
+
 }

@@ -4,6 +4,7 @@ import com.hendisantika.usermanagement.dto.ChangePasswordForm;
 import com.hendisantika.usermanagement.entity.Role;
 import com.hendisantika.usermanagement.entity.User;
 import com.hendisantika.usermanagement.exception.CustomFieldValidationException;
+import com.hendisantika.usermanagement.exception.UsernameOrIdNotFound;
 import com.hendisantika.usermanagement.repository.RoleRepository;
 import com.hendisantika.usermanagement.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -156,6 +157,17 @@ public class UserController {
     @GetMapping("/userForm/cancel")
     public String cancelEditUser() {
         return "redirect:/userForm";
+    }
+
+    @GetMapping("/deleteUser/{id}")
+    public String deleteUser(Model model, @PathVariable(name = "id") Long id) {
+        try {
+            userService.deleteUser(id);
+            log.info("User deleted successfully.");
+        } catch (UsernameOrIdNotFound uoin) {
+            model.addAttribute("listErrorMessage", uoin.getMessage());
+        }
+        return userForm(model);
     }
 
 }

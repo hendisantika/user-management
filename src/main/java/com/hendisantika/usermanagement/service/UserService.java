@@ -5,6 +5,7 @@ import com.hendisantika.usermanagement.exception.CustomFieldValidationException;
 import com.hendisantika.usermanagement.exception.UsernameOrIdNotFound;
 import com.hendisantika.usermanagement.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -83,4 +84,11 @@ public class UserService {
         to.setEmail(from.getEmail());
         to.setRoles(from.getRoles());
     }
+
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    public void deleteUser(Long id) throws UsernameOrIdNotFound {
+        User user = getUserById(id);
+        repository.delete(user);
+    }
+
 }

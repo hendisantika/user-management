@@ -48,4 +48,13 @@ public class UserService {
         }
         return true;
     }
+
+    public User createUser(User user) throws Exception {
+        if (checkUsernameAvailable(user) && checkPasswordValid(user)) {
+            String encodedPassword = bCryptPasswordEncoder.encode(user.getPassword());
+            user.setPassword(encodedPassword);
+            user = repository.save(user);
+        }
+        return user;
+    }
 }

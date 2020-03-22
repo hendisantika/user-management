@@ -88,4 +88,10 @@ public class UserController {
         model.addAttribute(activeTab, "active");
     }
 
+    @GetMapping("/userForm")
+    public String userForm(Model model) {
+        baseAttributerForUserForm(model, new User(), TAB_LIST);
+        return "user-form/user-view";
+    }
+
 }

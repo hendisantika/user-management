@@ -2,6 +2,7 @@ package com.hendisantika.usermanagement.service;
 
 import com.hendisantika.usermanagement.entity.User;
 import com.hendisantika.usermanagement.exception.CustomFieldValidationException;
+import com.hendisantika.usermanagement.exception.UsernameOrIdNotFound;
 import com.hendisantika.usermanagement.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -56,5 +57,9 @@ public class UserService {
             user = repository.save(user);
         }
         return user;
+    }
+
+    public User getUserById(Long id) throws UsernameOrIdNotFound {
+        return repository.findById(id).orElseThrow(() -> new UsernameOrIdNotFound("El Id del usuario no existe."));
     }
 }

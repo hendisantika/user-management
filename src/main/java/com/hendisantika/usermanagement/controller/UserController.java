@@ -94,4 +94,27 @@ public class UserController {
         return "user-form/user-view";
     }
 
+    @PostMapping("/userForm")
+    public String createUser(@Valid @ModelAttribute("userForm") User user, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            baseAttributerForUserForm(model, user, TAB_FORM);
+        } else {
+            try {
+                userService.createUser(user);
+                log.info("User created succesfully.");
+                baseAttributerForUserForm(model, new User(), TAB_LIST);
+
+            } catch (CustomFieldValidationException cfve) {
+                result.rejectValue(cfve.getFieldName(), null, cfve.getMessage());
+                baseAttributerForUserForm(model, user, TAB_FORM);
+            } catch (Exception e) {
+                model.addAttribute("formErrorMessage", e.getMessage());
+                baseAttributerForUserForm(model, user, TAB_FORM);
+                log.info("Error  on User creation.");
+            }
+        }
+        log.info("Show user-view page");
+        return "user-form/user-view";
+    }
+
 }

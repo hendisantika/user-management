@@ -1,5 +1,6 @@
 package com.hendisantika.usermanagement.controller;
 
+import com.hendisantika.usermanagement.dto.ChangePasswordForm;
 import com.hendisantika.usermanagement.entity.Role;
 import com.hendisantika.usermanagement.entity.User;
 import com.hendisantika.usermanagement.exception.CustomFieldValidationException;
@@ -13,6 +14,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.validation.Valid;
@@ -116,5 +118,17 @@ public class UserController {
         log.info("Show user-view page");
         return "user-form/user-view";
     }
+
+    @GetMapping("/editUser/{id}")
+    public String getEditUserForm(Model model, @PathVariable(name = "id") Long id) throws Exception {
+        User userToEdit = userService.getUserById(id);
+        log.info("Show  user-edit page.");
+        baseAttributerForUserForm(model, userToEdit, TAB_FORM);
+        model.addAttribute("editMode", "true");
+        model.addAttribute("passwordForm", new ChangePasswordForm(id));
+
+        return "user-form/user-view";
+    }
+
 
 }

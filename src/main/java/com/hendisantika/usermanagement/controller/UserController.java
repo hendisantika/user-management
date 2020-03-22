@@ -4,6 +4,7 @@ import com.hendisantika.usermanagement.repository.RoleRepository;
 import com.hendisantika.usermanagement.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 
 /**
  * Created by IntelliJ IDEA.
@@ -25,4 +26,9 @@ public class UserController {
 
     @Autowired
     private RoleRepository roleRepository;
+
+    @GetMapping({"/", "/login"})
+    public String index() {
+        return "index";
+    }
 }

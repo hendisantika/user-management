@@ -1,10 +1,16 @@
 package com.hendisantika.usermanagement.controller;
 
+import com.hendisantika.usermanagement.entity.Role;
+import com.hendisantika.usermanagement.entity.User;
 import com.hendisantika.usermanagement.repository.RoleRepository;
 import com.hendisantika.usermanagement.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -30,5 +36,16 @@ public class UserController {
     @GetMapping({"/", "/login"})
     public String index() {
         return "index";
+    }
+
+    @GetMapping("/signup")
+    public String signup(Model model) {
+        Role userRole = roleRepository.findByName("USER");
+        List<Role> roles = Arrays.asList(userRole);
+
+        model.addAttribute("signup", true);
+        model.addAttribute("userForm", new User());
+        model.addAttribute("roles", roles);
+        return "user-form/user-signup";
     }
 }

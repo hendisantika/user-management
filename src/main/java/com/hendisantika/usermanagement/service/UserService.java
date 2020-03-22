@@ -132,5 +132,22 @@ public class UserService {
         return roles != null;
     }
 
+    private User getLoggedUser() throws Exception {
+        //Get the logged in user
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        UserDetails loggedUser = null;
+
+        //Verify that this fetched session object is the user
+        if (principal instanceof UserDetails) {
+            loggedUser = (UserDetails) principal;
+        }
+
+        User myUser = repository
+                .findByUsername(loggedUser.getUsername()).orElseThrow(() -> new Exception("Error obteniendo el " +
+                        "usuario logeado desde la sesion."));
+
+        return myUser;
+    }
 
 }

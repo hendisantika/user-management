@@ -1,11 +1,14 @@
 package com.hendisantika.usermanagement.service;
 
+import com.hendisantika.usermanagement.dto.ChangePasswordForm;
 import com.hendisantika.usermanagement.entity.User;
 import com.hendisantika.usermanagement.exception.CustomFieldValidationException;
 import com.hendisantika.usermanagement.exception.UsernameOrIdNotFound;
 import com.hendisantika.usermanagement.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -90,5 +93,44 @@ public class UserService {
         User user = getUserById(id);
         repository.delete(user);
     }
+
+    public User changePassword(ChangePasswordForm form) throws Exception {
+        User user = getUserById(form.getId());
+
+        if (!isLoggedUserADMIN() && !user.getPassword().equals(form.getCurrentPassword())) {
+            throw new Exception("Current Password invalido.");
+        }
+
+        if (user.getPassword().equals(form.getNewPassword())) {
+            throw new Exception("Nuevo debe ser diferente al password actual.");
+        }
+
+        if (!form.getNewPassword().equals(form.getConfirmPassword())) {
+            throw new Exception("Nuevo Password y Confirm Password no coinciden.");
+        }
+
+        String encodePassword = bCryptPasswordEncoder.encode(form.getNewPassword());
+        user.setPassword(encodePassword);
+        return repository.save(user);
+    }
+
+    private boolean isLoggedUserADMIN() {
+        //Get the logged in user
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        UserDetails loggedUser = null;
+        Object roles = null;
+
+        //Verify that this fetched session object is the user
+        if (principal instanceof UserDetails) {
+            loggedUser = (UserDetails) principal;
+
+            roles = loggedUser.getAuthorities().stream()
+                    .filter(x -> "ROLE_ADMIN".equals(x.getAuthority())).findFirst()
+                    .orElse(null);
+        }
+        return roles != null;
+    }
+
 
 }

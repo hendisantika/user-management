@@ -153,5 +153,9 @@ public class UserController {
 
     }
 
+    @GetMapping("/userForm/cancel")
+    public String cancelEditUser() {
+        return "redirect:/userForm";
+    }
 
 }

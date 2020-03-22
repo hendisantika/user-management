@@ -130,5 +130,28 @@ public class UserController {
         return "user-form/user-view";
     }
 
+    @PostMapping("/editUser")
+    public String postEditUserForm(@Valid @ModelAttribute("userForm") User user, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            baseAttributerForUserForm(model, user, TAB_FORM);
+            model.addAttribute("editMode", "true");
+            model.addAttribute("passwordForm", new ChangePasswordForm(user.getId()));
+        } else {
+            try {
+                userService.updateUser(user);
+                baseAttributerForUserForm(model, new User(), TAB_LIST);
+                log.info("User updated successfully.");
+            } catch (Exception e) {
+                model.addAttribute("formErrorMessage", e.getMessage());
+
+                baseAttributerForUserForm(model, user, TAB_FORM);
+                model.addAttribute("editMode", "true");
+                model.addAttribute("passwordForm", new ChangePasswordForm(user.getId()));
+            }
+        }
+        return "user-form/user-view";
+
+    }
+
 
 }

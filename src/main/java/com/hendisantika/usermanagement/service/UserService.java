@@ -37,4 +37,15 @@ public class UserService {
         }
         return true;
     }
+
+    private boolean checkPasswordValid(User user) throws Exception {
+        if (user.getConfirmPassword() == null || user.getConfirmPassword().isEmpty()) {
+            throw new CustomFieldValidationException("Confirm Password is required", "confirmPassword");
+        }
+
+        if (!user.getPassword().equals(user.getConfirmPassword())) {
+            throw new CustomFieldValidationException("Password and Confirm Password are not the same", "password");
+        }
+        return true;
+    }
 }

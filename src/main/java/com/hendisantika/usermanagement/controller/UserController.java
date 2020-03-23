@@ -22,9 +22,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.validation.Valid;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static java.util.Arrays.asList;
 
 /**
  * Created by IntelliJ IDEA.
@@ -55,10 +57,34 @@ public class UserController {
 
     @GetMapping("/signup")
     public String signup(Model model) {
-        Role userRole = roleRepository.findByName("USER");
-        List<Role> roles = Arrays.asList(userRole);
+        Role userRole;
+        List<Role> roles = new ArrayList<>();
+        List<Role> userRoleList = (List<Role>) roleRepository.findAll();
+        if (userRoleList == null | userRoleList.size() == 0) {
+            Role role1 = new Role();
+            role1.setId(1L);
+            role1.setName("SUPER ADMIN");
+            role1.setDescription("ROLE SUPER ADMIN");
 
-        log.info("Roles {}", roles);
+            Role role2 = new Role();
+            role2.setId(2L);
+            role2.setName("ADMIN");
+            role2.setDescription("ROLE ADMIN");
+
+            Role role3 = new Role();
+            role3.setId(3L);
+            role3.setName("USER");
+            role3.setDescription("ROLE USER");
+            roleRepository.save(role1);
+            roleRepository.save(role2);
+            roleRepository.save(role3);
+            userRole = roleRepository.findByName("USER");
+            roles = asList(userRole);
+        } else {
+            userRole = roleRepository.findByName("USER");
+            roles = asList(userRole);
+        }
+        log.info("User Role List {}", userRole);
         log.info("Accesing singup page");
         model.addAttribute("signup", true);
         model.addAttribute("userForm", new User());
@@ -69,7 +95,7 @@ public class UserController {
     @PostMapping("/signup")
     public String signupAction(@Valid @ModelAttribute("userForm") User user, BindingResult result, ModelMap model) {
         Role userRole = roleRepository.findByName("USER");
-        List<Role> roles = Arrays.asList(userRole);
+        List<Role> roles = asList(userRole);
         log.info("Creating user");
         model.addAttribute("userForm", user);
         model.addAttribute("roles", roles);

@@ -1,5 +1,5 @@
 <div class="table-responsive">
-    <table class="table table-bordered table-hover table-striped" id="userList">
+    <table class="table table-bordered table-hover table-striped" id="userList" style="width: 100rem;">
         <thead class="thead-light">
         <tr>
             <th scope="col">#</th>
@@ -7,7 +7,9 @@
             <th scope="col">Last</th>
             <th scope="col">Username</th>
             <th scope="col">E-mail</th>
-            <th></th>
+            <th scope="col">Created On</th>
+            <th scope="col">Last Modified On</th>
+            <th scope="col">Action</th>
         </tr>
         </thead>
         <tbody>
@@ -17,6 +19,8 @@
             <td th:text="${user.lastName}"></td>
             <td th:text="${user.username}"></td>
             <td th:text="${user.email}"></td>
+            <td th:text="${user.createdOn}"></td>
+            <td th:text="${user.lastModifiedOn}"></td>
             <td>
 					<span th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')} or (${#authorization.expression('hasRole(''ROLE_USER'')')} and ${#httpServletRequest.remoteUser==user.username})">
 						<a href="#" th:href="@{'/editUser/'+ ${user.id}}"><i class="fas fa-edit"></i></a>
@@ -30,7 +34,7 @@
         </tbody>
     </table>
     <div class="alert alert-danger text-center" th:if="${listErrorMessage}" th:text="${listErrorMessage}">Error
-        MEssage
+        Message
     </div>
 </div>
 

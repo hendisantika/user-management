@@ -85,5 +85,5 @@ public class User implements Serializable {
     private LocalDateTime createdOn;
 
     @LastModifiedDate
-    private LocalDateTime lastModifiedDate;
+    private LocalDateTime lastModifiedOn;
 }

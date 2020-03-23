@@ -10,6 +10,7 @@ body {
 
 .card {
     opacity: .95;
+    /*min-width: 1250px;*/
 }
 
 .card-body {

@@ -144,8 +144,8 @@ public class UserService {
         }
 
         User myUser = repository
-                .findByUsername(loggedUser.getUsername()).orElseThrow(() -> new Exception("Error obteniendo el " +
-                        "usuario logeado desde la sesion."));
+                .findByUsername(loggedUser.getUsername()).orElseThrow(() -> new Exception("Error getting the logged " +
+                        "in user from the session."));
 
         return myUser;
     }

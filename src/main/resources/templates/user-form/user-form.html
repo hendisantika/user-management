@@ -2,7 +2,7 @@
 
     <form autocomplete="off" class="form" method="post" role="form"
           th:action="${signup}?@{/signup}:(${editMode} ?@{/editUser} :@{/userForm})" th:object="${userForm}">
-        <! - It is necessary to pass the validation of the Model ->
+        <!-- It is necessary to pass the validation of the Model -->
         <input class="form-control" th:field="${userForm.id}" th:if="${editMode}" type=hidden>
         <input class="form-control" name="password" th:if="${editMode}" type=hidden value="xxxx">
         <!-- remove the comment if you want to keep the @NotBlank validation of the confirmPassword field
@@ -49,7 +49,7 @@
             <div class="col-lg-9">
                 <select class="form-control" th:disabled="${disableFields}" th:field="${userForm.roles}"
                         th:size="${signup}?1:3">
-                    <option th:each="role :${roles}" th:text="${role.name}" th:value="${role.id}">
+                    <option th:each="role :${roles}" th:text="${role?.name}" th:value="${role?.id}">Role Name
                     </option>
                 </select>
                 <div class="alert-danger" th:errors="*{roles}" th:if="${#fields.hasErrors('roles')}">Name Error</div>

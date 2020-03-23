@@ -58,6 +58,7 @@ public class UserController {
         Role userRole = roleRepository.findByName("USER");
         List<Role> roles = Arrays.asList(userRole);
 
+        log.info("Roles {}", roles);
         log.info("Accesing singup page");
         model.addAttribute("signup", true);
         model.addAttribute("userForm", new User());

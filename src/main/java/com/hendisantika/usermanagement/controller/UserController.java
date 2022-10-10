@@ -9,10 +9,12 @@ import com.hendisantika.usermanagement.repository.RoleRepository;
 import com.hendisantika.usermanagement.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
+import org.springframework.util.CollectionUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -60,7 +62,7 @@ public class UserController {
         Role userRole;
         List<Role> roles = new ArrayList<>();
         List<Role> userRoleList = (List<Role>) roleRepository.findAll();
-        if (userRoleList == null | userRoleList.size() == 0) {
+        if (CollectionUtils.isEmpty(userRoleList)) {
             Role role1 = new Role();
             role1.setId(1L);
             role1.setName("SUPER ADMIN");
@@ -78,12 +80,11 @@ public class UserController {
             roleRepository.save(role1);
             roleRepository.save(role2);
             roleRepository.save(role3);
-            userRole = roleRepository.findByName("USER");
-            roles = asList(userRole);
-        } else {
-            userRole = roleRepository.findByName("USER");
-            roles = asList(userRole);
+//            userRole = roleRepository.findByName("USER");
+//            roles = asList(userRole);
         }
+        userRole = roleRepository.findByName("USER");
+        roles = asList(userRole);
         log.info("User Role List {}", userRole);
         log.info("Accesing singup page");
         model.addAttribute("signup", true);
@@ -207,7 +208,7 @@ public class UserController {
         try {
             if (errors.hasErrors()) {
                 String result = errors.getAllErrors()
-                        .stream().map(x -> x.getDefaultMessage())
+                        .stream().map(DefaultMessageSourceResolvable::getDefaultMessage)
                         .collect(Collectors.joining(""));
 
                 throw new Exception(result);

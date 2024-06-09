@@ -65,7 +65,7 @@
                         <h4>Roster</h4>
                     </div>
                     <div class="card-body">
-                        <div th:include="user-form/user-list.html" th:remove="tag"></div>
+                        <div th:insert="~{user-form/user-list.html}" th:remove="tag"></div>
                     </div>
                 </div>
             </div>
@@ -76,14 +76,14 @@
                         <h4>User Information</h4>
                     </div>
                     <div class="card-body">
-                        <div th:include="user-form/user-form.html" th:remove="tag"></div>
+                        <div th:insert="~{user-form/user-form.html}" th:remove="tag"></div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<div th:if="${editMode}" th:include="user-form/change-password.html" th:remove="tag"></div>
-<div th:include="user-form/confirm-delete-dialog.html" th:remove="tag"></div>
+<div th:if="${editMode}" th:insert="~{user-form/change-password.html}" th:remove="tag"></div>
+<div th:insert="~{user-form/confirm-delete-dialog.html}" th:remove="tag"></div>
 </body>
 </html>

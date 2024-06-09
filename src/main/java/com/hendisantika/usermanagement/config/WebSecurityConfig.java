@@ -1,14 +1,16 @@
 package com.hendisantika.usermanagement.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 /**
  * Created by IntelliJ IDEA.
@@ -21,49 +23,80 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
  */
 @Configuration
 @EnableWebSecurity
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-    String[] resources = new String[]{
+@RequiredArgsConstructor
+public class WebSecurityConfig {
+    private final String[] PUBLIC_LINK = new String[]{
             "/include/**", "/css/**", "/icons/**", "/img/**", "/js/**", "/layer/**", "/static/**"
     };
 
-    @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final PasswordEncoder bCryptPasswordEncoder;
 
-    @Autowired
-    private UserDetailsService userDetailsService;
+    private final UserDetailsService userDetailsService;
 
     @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
-        bCryptPasswordEncoder = new BCryptPasswordEncoder(4);
-        return bCryptPasswordEncoder;
-    }
-
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        //Specify the person in charge of the login and encryption of the password
-        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+    public DaoAuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider auth = new DaoAuthenticationProvider();
+        auth.setUserDetailsService(userDetailsService);
+        auth.setPasswordEncoder(bCryptPasswordEncoder);
+        return auth;
     }
 
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
+    @Bean
+    public SecurityFilterChain configure(HttpSecurity http) throws Exception {
         http
-                .authorizeRequests()
-                .antMatchers(resources).permitAll()
-                .antMatchers("/", "/index", "/signup").permitAll()
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(req -> req
+                                .requestMatchers(PUBLIC_LINK).permitAll()
+                                .requestMatchers("/", "/index", "/signup").permitAll()
                 .anyRequest().authenticated()
-                .and()
-                .formLogin()
+                )
+                .formLogin(formLogin -> formLogin
                 .loginPage("/login")
                 .permitAll()
                 .defaultSuccessUrl("/userForm")
                 .failureUrl("/login?error=true")
                 .usernameParameter("username")
                 .passwordParameter("password")
-                .and()
-                .csrf().disable()
-                .logout()
-                .permitAll()
-                .logoutSuccessUrl("/login?logout");
+
+                )
+                .logout(
+                        logout -> logout
+                                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                                .logoutSuccessUrl("/login?logout")
+                                .permitAll()
+                );
+
+//        http
+//                .authorizeHttpRequests(authorize ->
+//                        authorize
+//                                .requestMatchers(PUBLIC_LINK).permitAll()
+//                                .requestMatchers("/", "/index", "/signup").permitAll()
+//                                .anyRequest().authenticated()
+//                )
+//
+//                formLogin()
+//                .loginPage("/login")
+//                .permitAll()
+//                .defaultSuccessUrl("/userForm")
+//                .failureUrl("/login?error=true")
+//                .usernameParameter("username")
+//                .passwordParameter("password")
+//        return http.build();
+//        http.csrf().disable()
+//                .authorizeHttpRequests((authorize) ->
+//                        authorize.anyRequest().authenticated()
+//                ).formLogin(
+//                        form -> form
+//                                .loginPage("/login")
+//                                .loginProcessingUrl("/login")
+//                                .defaultSuccessUrl("/welcome")
+//                                .permitAll()
+//                ).logout(
+//                        logout -> logout
+//                                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+//                                .permitAll()
+//                );
+        return http.build();
     }
 }

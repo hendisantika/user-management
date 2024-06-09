@@ -75,7 +75,7 @@ public class UserService {
 
 
     /**
-     * Map everythin but the password.
+     * Map everything but the password.
      *
      * @param from
      * @param to
@@ -98,15 +98,15 @@ public class UserService {
         User user = getUserById(form.getId());
 
         if (!isLoggedUserADMIN() && !user.getPassword().equals(form.getCurrentPassword())) {
-            throw new Exception("Current Password invalido.");
+            throw new Exception("Current Password invalid.");
         }
 
         if (user.getPassword().equals(form.getNewPassword())) {
-            throw new Exception("Nuevo debe ser diferente al password actual.");
+            throw new Exception("New password must be different from the current password.");
         }
 
         if (!form.getNewPassword().equals(form.getConfirmPassword())) {
-            throw new Exception("Nuevo Password y Confirm Password no coinciden.");
+            throw new Exception("New Password and Confirm Password do not match.");
         }
 
         String encodePassword = bCryptPasswordEncoder.encode(form.getNewPassword());

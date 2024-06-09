@@ -52,11 +52,12 @@ public class User implements Serializable {
 
     @Column
     @NotBlank
-    @Size(min = 5, max = 8, message = "Size rules are not followed")
+    @Size(min = 2, max = 15, message = "Size rules are not followed")
     private String firstName;
 
     @Column
     @NotBlank
+    @Size(min = 2, max = 15, message = "Size rules are not followed")
     private String lastName;
 
     @Column

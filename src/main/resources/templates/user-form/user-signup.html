@@ -34,7 +34,7 @@
                 <h4>User Signup</h4>
             </div>
             <div class="card-body">
-                <div th:include="user-form/user-form.html" th:remove="tag"></div>
+                <div th:insert="~{user-form/user-form.html}" th:remove="tag"></div>
             </div>
         </div>
     </div>

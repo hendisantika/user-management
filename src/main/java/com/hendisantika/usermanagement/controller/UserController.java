@@ -7,8 +7,9 @@ import com.hendisantika.usermanagement.exception.CustomFieldValidationException;
 import com.hendisantika.usermanagement.exception.UsernameOrIdNotFound;
 import com.hendisantika.usermanagement.repository.RoleRepository;
 import com.hendisantika.usermanagement.service.UserService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -23,8 +24,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import javax.validation.Valid;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,16 +42,15 @@ import static java.util.Arrays.asList;
  */
 @Controller
 @Slf4j
+@RequiredArgsConstructor
 public class UserController {
 
     private final String TAB_FORM = "formTab";
     private final String TAB_LIST = "listTab";
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
-    @Autowired
-    private RoleRepository roleRepository;
+    private final RoleRepository roleRepository;
 
     @GetMapping({"/", "/login"})
     public String index() {
@@ -84,9 +84,9 @@ public class UserController {
 //            roles = asList(userRole);
         }
         userRole = roleRepository.findByName("USER");
-        roles = asList(userRole);
+        roles = Collections.singletonList(userRole);
         log.info("User Role List {}", userRole);
-        log.info("Accesing singup page");
+        log.info("Accessing signup page");
         model.addAttribute("signup", true);
         model.addAttribute("userForm", new User());
         model.addAttribute("roles", roles);
@@ -96,7 +96,7 @@ public class UserController {
     @PostMapping("/signup")
     public String signupAction(@Valid @ModelAttribute("userForm") User user, BindingResult result, ModelMap model) {
         Role userRole = roleRepository.findByName("USER");
-        List<Role> roles = asList(userRole);
+        List<Role> roles = Collections.singletonList(userRole);
         log.info("Creating user");
         model.addAttribute("userForm", user);
         model.addAttribute("roles", roles);
@@ -116,7 +116,7 @@ public class UserController {
         return index();
     }
 
-    private void baseAttributerForUserForm(Model model, User user, String activeTab) {
+    private void baseAttributeForUserForm(Model model, User user, String activeTab) {
         model.addAttribute("userForm", user);
         model.addAttribute("userList", userService.getAllUsers());
         model.addAttribute("roles", roleRepository.findAll());
@@ -125,26 +125,26 @@ public class UserController {
 
     @GetMapping("/userForm")
     public String userForm(Model model) {
-        baseAttributerForUserForm(model, new User(), TAB_LIST);
+        baseAttributeForUserForm(model, new User(), TAB_LIST);
         return "user-form/user-view";
     }
 
     @PostMapping("/userForm")
     public String createUser(@Valid @ModelAttribute("userForm") User user, BindingResult result, Model model) {
         if (result.hasErrors()) {
-            baseAttributerForUserForm(model, user, TAB_FORM);
+            baseAttributeForUserForm(model, user, TAB_FORM);
         } else {
             try {
                 userService.createUser(user);
                 log.info("User created succesfully.");
-                baseAttributerForUserForm(model, new User(), TAB_LIST);
+                baseAttributeForUserForm(model, new User(), TAB_LIST);
 
             } catch (CustomFieldValidationException cfve) {
                 result.rejectValue(cfve.getFieldName(), null, cfve.getMessage());
-                baseAttributerForUserForm(model, user, TAB_FORM);
+                baseAttributeForUserForm(model, user, TAB_FORM);
             } catch (Exception e) {
                 model.addAttribute("formErrorMessage", e.getMessage());
-                baseAttributerForUserForm(model, user, TAB_FORM);
+                baseAttributeForUserForm(model, user, TAB_FORM);
                 log.info("Error  on User creation.");
             }
         }
@@ -156,7 +156,7 @@ public class UserController {
     public String getEditUserForm(Model model, @PathVariable(name = "id") Long id) throws Exception {
         User userToEdit = userService.getUserById(id);
         log.info("Show  user-edit page.");
-        baseAttributerForUserForm(model, userToEdit, TAB_FORM);
+        baseAttributeForUserForm(model, userToEdit, TAB_FORM);
         model.addAttribute("editMode", "true");
         model.addAttribute("passwordForm", new ChangePasswordForm(id));
 
@@ -166,18 +166,18 @@ public class UserController {
     @PostMapping("/editUser")
     public String postEditUserForm(@Valid @ModelAttribute("userForm") User user, BindingResult result, Model model) {
         if (result.hasErrors()) {
-            baseAttributerForUserForm(model, user, TAB_FORM);
+            baseAttributeForUserForm(model, user, TAB_FORM);
             model.addAttribute("editMode", "true");
             model.addAttribute("passwordForm", new ChangePasswordForm(user.getId()));
         } else {
             try {
                 userService.updateUser(user);
-                baseAttributerForUserForm(model, new User(), TAB_LIST);
+                baseAttributeForUserForm(model, new User(), TAB_LIST);
                 log.info("User updated successfully.");
             } catch (Exception e) {
                 model.addAttribute("formErrorMessage", e.getMessage());
 
-                baseAttributerForUserForm(model, user, TAB_FORM);
+                baseAttributeForUserForm(model, user, TAB_FORM);
                 model.addAttribute("editMode", "true");
                 model.addAttribute("passwordForm", new ChangePasswordForm(user.getId()));
             }
